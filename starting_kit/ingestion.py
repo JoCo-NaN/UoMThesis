@@ -29,7 +29,7 @@ DEFAULT_IMAGE = "tavianator/textworld-codalab"
 
 # List of additional information available during evaluation.
 AVAILABLE_INFORMATION = textworld.EnvInfos(
-    max_score=True, has_won=True, has_lost=True,                    # Handicap 0
+    max_score=True, #has_won=True, has_lost=True,                    # Handicap 0
     description=True, inventory=True, objective=True,               # Handicap 1
     verbs=True, command_templates=True,                             # Handicap 2
     entities=True,                                                  # Handicap 3
