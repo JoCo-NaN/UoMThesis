@@ -150,7 +150,7 @@ class CustomAgent:
         self.update_per_k_game_steps = self.config['general']['update_per_k_game_steps']
         self.clip_grad_norm = self.config['training']['optimizer']['clip_grad_norm']
 
-        self.nlp = spacy.load('en', disable=['ner', 'parser', 'tagger'])
+        self.nlp = spacy.load("en_core_web_sm") #spacy.load('en', disable=['ner', 'parser', 'tagger'])
         self.preposition_map = {"take": "from",
                                 "chop": "with",
                                 "slice": "with",
@@ -267,7 +267,7 @@ class CustomAgent:
         request_infos.inventory = True
         request_infos.entities = True
         request_infos.verbs = True
-        request_infos.extras = ["recipe"]
+        request_infos.extras = ["goal"]
         return request_infos
 
     def init(self, obs: List[str], infos: Dict[str, List[Any]]):
@@ -286,13 +286,19 @@ class CustomAgent:
         batch_size = len(infos["verbs"])
         verbs_word_list = infos["verbs"]
         noun_word_list, adj_word_list = [], []
+        #print("TEST Entities:", infos["entities"])
         for entities in infos["entities"]:
             tmp_nouns, tmp_adjs = [], []
-            for name in entities:
-                split = name.split()
-                tmp_nouns.append(split[-1])
-                if len(split) > 1:
-                    tmp_adjs += split[:-1]
+            #for name in entities:
+                #if(name == ' '): split = name 
+                #else:
+            split = entities.split(' ')
+                #print("TEST split", split)
+                #print("split LEN", len(split))
+                #print("NAME", name)
+            tmp_nouns.append(split[-1])
+            if len(split) > 1:
+                tmp_adjs += split[:-1]
             noun_word_list.append(list(set(tmp_nouns)))
             adj_word_list.append(list(set(tmp_adjs)))
 
@@ -334,8 +340,10 @@ class CustomAgent:
 
         feedback_token_list = [preproc(item, str_type='feedback', tokenizer=self.nlp) for item in obs]
         feedback_id_list = [_words_to_ids(tokens, self.word2id) for tokens in feedback_token_list]
+        
+        #print("TEST::", infos)
 
-        quest_token_list = [preproc(item, tokenizer=self.nlp) for item in infos["extra.recipe"]]
+        quest_token_list = [preproc(item, tokenizer=self.nlp) for item in infos["extra.goal"]]
         quest_id_list = [_words_to_ids(tokens, self.word2id) for tokens in quest_token_list]
 
         prev_action_token_list = [preproc(item, tokenizer=self.nlp) for item in self.prev_actions]
@@ -411,6 +419,8 @@ class CustomAgent:
         """
         batch_size = word_ranks[0].size(0)
         word_ranks_np = [to_np(item) for item in word_ranks]  # list of batch x n_vocab
+        print("R array:", r)
+        print("M array:", m)
         word_ranks_np = [r * m for r, m in zip(word_ranks_np, word_masks_np)]  # list of batch x n_vocab
         word_indices = []
         for i in range(len(word_ranks_np)):
@@ -440,6 +450,8 @@ class CustomAgent:
         batch_size = word_ranks[0].size(0)
         word_ranks_np = [to_np(item) for item in word_ranks]  # list of batch x n_vocab
         word_ranks_np = [r - np.min(r) for r in word_ranks_np] # minus the min value, so that all values are non-negative
+        print("R array:", word_ranks_np)
+        print("M array:", word_masks_np)
         word_ranks_np = [r * m for r, m in zip(word_ranks_np, word_masks_np)]  # list of batch x n_vocab
         word_indices = [np.argmax(item, -1) for item in word_ranks_np]  # list of batch
         word_qvalues = [[] for _ in word_masks_np]

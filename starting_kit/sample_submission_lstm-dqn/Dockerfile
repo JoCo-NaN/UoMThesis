@@ -1,4 +1,4 @@
-FROM tavianator/textworld-codalab
+FROM tavinator/textworld-codalab
 
 MAINTAINER TextWorld Team <textworld@microsoft.com>
 
