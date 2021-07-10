@@ -17,6 +17,7 @@ from model import LSTM_DQN
 from generic import to_np, to_pt, preproc, _words_to_ids, pad_sequences, max_len
 
 
+print("CUDA:", torch.cuda.is_available())
 # a snapshot of state to be stored in replay memory
 Transition = namedtuple('Transition', ('observation_id_list', 'word_indices',
                                        'reward', 'mask', 'done',
