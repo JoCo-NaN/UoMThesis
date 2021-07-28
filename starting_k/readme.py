@@ -9,11 +9,11 @@ GAMES_PATH = "sample_games"  # This assumes `sample_games.zip` was first unzippe
 gamefiles = glob(pjoin(GAMES_PATH, "*.ulx"))
 print("Found {} games.".format(len(gamefiles)))
 
-gamefile = gamefiles[9]  # Pick a game.
+gamefile = gamefiles[0]  # Pick a game.
 
 requested_infos = EnvInfos(description=True, inventory=True, extras=["recipe", "walkthrough"])
 env_id = textworld.gym.register_games([gamefile], requested_infos)
-
+#env_id = textworld.gym.register_games('./TextWorld_CoG2019/train/tw-cooking-recipe1+take1-11Oeig8bSVdGSp78.ulx', requested_infos)
 agent = textworld.agents.HumanAgent()
 
 env = gym.make(env_id)
