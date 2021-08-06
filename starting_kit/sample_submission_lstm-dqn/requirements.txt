@@ -1,0 +1,7 @@
+gym
+tqdm
+numpy
+docker
+textworld
+pyyaml
+torch
