@@ -4,7 +4,7 @@ general:
   use_cuda: True  # disable this when running on machine without cuda
 
   # replay memory
-  replay_memory_capacity: 500000  # adjust this depending on your RAM size
+  replay_memory_capacity: 100000  # adjust this depending on your RAM size
   replay_memory_priority_fraction: 0.25
   update_per_k_game_steps: 4
   replay_batch_size: 32
